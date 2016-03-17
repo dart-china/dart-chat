@@ -9,4 +9,5 @@ dependencies:
 transformers:
 - angular2:
     entry_points: web/main.dart
+    platform_directives: 'package:angular2/common.dart#CORE_DIRECTIVES'
 - dart_to_js_script_rewriter
