@@ -1,5 +1,27 @@
 <h1>Dartlang China - Dart SDK downloads</h1>
 
-<select>
-  <option *ngFor="#console of gameConsoleList" value="{{ console }}">{{ console }}</option>
+<h2>渠道</h2>
+<select (change)="onChannelChange($event.target.value)">
+  <option *ngFor="#channel of channelList" [value]="channel['value']">{{ channel['name'] }}</option>
 </select>
+
+<h2>平台</h2>
+<select (change)="onPlatformChange($event.target.value)">
+  <option *ngFor="#platform of platformList" [value]="platform">{{ platform }}</option>
+</select>
+
+<h2>架构</h2>
+<select (change)="onArchitectureChange($event.target.value)">
+  <option *ngFor="#architecture of architectureList" [value]="architecture">{{ architecture }}位</option>
+</select>
+
+<h2>版本</h2>
+<select (change)="onVersionChange($event.target.value)">
+  <option *ngFor="#version of versionList" [value]="version">{{ version }}</option>
+</select>
+
+<br/>
+<br/>
+
+<button type="button" name="button" (click)="build()">生成下载链接</button>
+<p>{{ model.channel }} {{ model.platform }} {{ model.architecture }} {{ model.version }}</p>
