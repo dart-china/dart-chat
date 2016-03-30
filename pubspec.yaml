@@ -1,12 +1,15 @@
-name: downloads
+name: dart_chat
 version: 0.0.1
 environment:
   sdk: '>=1.13.0 <2.0.0'
 dependencies:
-  angular2: 2.0.0-beta.6
+  angular2: 2.0.0-beta.12
   browser: ^0.10.0
   dart_to_js_script_rewriter: ^0.1.0
+  shelf: "^0.6.5"
+  shelf_static: "^0.2.3+3"
 transformers:
 - angular2:
-    entry_points: web/main.dart
+    entry_points: public/main.dart
+    platform_directives: 'package:angular2/common.dart#CORE_DIRECTIVES'
 - dart_to_js_script_rewriter
