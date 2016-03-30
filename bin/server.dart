@@ -1,19 +1,22 @@
-import 'package:shelf/shelf.dart' as shelf;
-import 'package:shelf/shelf_io.dart' as io;
+import 'dart:io';
 
 main() async {
-  var handler = const shelf.Pipeline()
-      .addMiddleware(shelf.logRequests())
-      .addHandler(_echoRequest);
+  var server = await HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, 8080);
+  print("Serving at ${server.address}:${server.port}");
+  await for (HttpRequest request in server) {
+    if (request.uri.path == '/ws') {
+      // Upgrade an HttpRequest to a WebSocket connection.
+      var socket = await WebSocketTransformer.upgrade(request);
+      socket.listen(handleMsg);
+    }
 
-  var server = await io.serve(handler, 'localhost', 8080);
-
-  // Enable content compression
-  server.autoCompress = true;
-
-  print('Serving at http://${server.address.host}:${server.port}');
+    request.response
+      ..headers.contentType = new ContentType("text", "plain", charset: "utf-8")
+      ..write('Hello, world')
+      ..close();
+  }
 }
 
-shelf.Response _echoRequest(shelf.Request request) {
-  return new shelf.Response.ok('Request for "${request.url}"');
+handleMsg(msg) {
+  print('Message received: $msg');
 }
