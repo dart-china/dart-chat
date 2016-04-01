@@ -1,6 +1,6 @@
 import 'package:angular2/bootstrap.dart';
 
-import './app/app.dart';
+import 'components/dart-chat/dart-chat.dart';
 
 main() {
   bootstrap(App);
