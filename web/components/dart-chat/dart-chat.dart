@@ -8,5 +8,9 @@ import '../send-form/send-form.dart';
     templateUrl: './dart-chat.html',
     directives: const [MessagePanel, SendForm])
 class App {
+  List<String> roomList = ['Lobby'];
+  String defautRoom = 'Lobby';
+  List<String> messageList = [];
+
   App() {}
 }

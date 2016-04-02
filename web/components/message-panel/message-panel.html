@@ -1,3 +1,7 @@
-<div id='room'></div>
-<div id='room-list'></div>
+<div id='room'>{{ currentRoom }}</div>
+<div id='room-list'>
+  <ul>
+    <li *ngFor="#room of roomList">{{ room }}</li>
+  </ul>
+</div>
 <div id='messages'></div>
