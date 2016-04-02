@@ -7,10 +7,12 @@ import '../send-form/send-form.dart';
     selector: 'dart-chat',
     templateUrl: './dart-chat.html',
     directives: const [MessagePanel, SendForm])
-class App {
-  List<String> roomList = ['Lobby'];
-  String defautRoom = 'Lobby';
+class DartChat {
+  static final String _defaultRoom = 'Lobby';
+  List<String> roomList = [_defaultRoom];
   List<String> messageList = [];
 
-  App() {}
+  String get defaultRoom => _defaultRoom;
+
+  DartChat() {}
 }
