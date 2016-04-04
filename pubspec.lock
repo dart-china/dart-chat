@@ -31,6 +31,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.15.2+7"
+  boolean_selector:
+    description:
+      name: boolean_selector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   browser:
     description:
       name: browser
@@ -121,6 +127,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.2+1"
+  http_multi_server:
+    description:
+      name: http_multi_server
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   http_parser:
     description:
       name: http_parser
@@ -139,6 +151,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.11.2"
+  matcher:
+    description:
+      name: matcher
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.12.0+2"
   mime:
     description:
       name: mime
@@ -187,6 +205,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.0+1"
+  pub_semver:
+    description:
+      name: pub_semver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.4"
   shelf:
     description:
       name: shelf
@@ -199,12 +223,24 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.3+3"
+  shelf_web_socket:
+    description:
+      name: shelf_web_socket
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   smoke:
     description:
       name: smoke
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.6+2"
+  source_map_stack_trace:
+    description:
+      name: source_map_stack_trace
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   source_maps:
     description:
       name: source_maps
@@ -235,6 +271,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.4+1"
+  test:
+    description:
+      name: test
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.12.13"
   typed_data:
     description:
       name: typed_data
@@ -253,6 +295,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.7"
+  web_socket_channel:
+    description:
+      name: web_socket_channel
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   when:
     description:
       name: when
@@ -271,4 +319,4 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.8"
-sdk: ">=1.14.0 <2.0.0"
+sdk: ">=1.14.0 <1.17.0"
