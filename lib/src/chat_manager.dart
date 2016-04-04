@@ -21,7 +21,7 @@ class ChatManager {
 
     _handleJoinRoom(guestId, _defaultRoom);
 
-    socket.listen(_handleMsg);
+    socket.listen(_handleData);
   }
 
   String _handleGuestIn(WebSocket socket) {
@@ -51,62 +51,76 @@ class ChatManager {
     });
   }
 
-  _handleMsg(String msg) {
-    Map json = JSON.decode(msg) ?? {};
-    String id = json['id'];
-    if (json != null && id != null) {
-      if (json.containsKey('nameAttempt')) {
-        String name = json['nameAttemp']['name'];
-        if (name != null) {
-          if (name.startsWith('Guest')) {
+  _handleNameAttempt(String id, Map json) {
+    if (json.containsKey('nameAttempt')) {
+      String name = json['nameAttemp']['name'];
+      if (name != null) {
+        if (name.startsWith('Guest')) {
+          _send({
+            'nameResult': {
+              'success': false,
+              'message': 'Names cannot begin with "Guest".'
+            }
+          });
+        } else {
+          if (_nameUsed.contains(name)) {
             _send({
               'nameResult': {
                 'success': false,
-                'message': 'Names cannot begin with "Guest".'
+                'message': 'That name is already in use.'
               }
             });
           } else {
-            if (_nameUsed.contains(name)) {
-              _send({
-                'nameResult': {
-                  'success': false,
-                  'message': 'That name is already in use.'
-                }
-              });
-            } else {
-              var previousName = _nickNames[id];
-              var previousIndex = _nameUsed.indexOf(id);
-              _nameUsed.add(name);
-              _nameUsed.removeAt(previousIndex);
-              _nickNames[id] = name;
-              _send({
-                'nameResult': {'success': true, 'name': name, 'id': id}
-              });
+            var previousName = _nickNames[id];
+            var previousIndex = _nameUsed.indexOf(id);
+            _nameUsed.add(name);
+            _nameUsed.removeAt(previousIndex);
+            _nickNames[id] = name;
+            _send({
+              'nameResult': {'success': true, 'name': name, 'id': id}
+            });
 
-              var currentRoom = _currentRoom[id];
-              _send({
-                'message': {
-                  'room': currentRoom,
-                  'text': '$previousName is now known as $name'
-                }
-              });
-            }
+            var currentRoom = _currentRoom[id];
+            _send({
+              'message': {
+                'room': currentRoom,
+                'text': '$previousName is now known as $name'
+              }
+            });
           }
         }
-      } else if (json.containsKey('join')) {
-        String room = json['join']['room'];
-        if (room != null) {
-          _handleJoinRoom(id, room);
-        }
-      } else if (json.containsKey('message')) {
-        String text = json['message']['text'];
-        String room = json['message']['room'] ?? _defaultRoom;
-        if (id != null && text != null) {
-          _send({
-            'message': {'room': room, 'text': text}
-          });
-        }
       }
+    }
+  }
+
+  _handleJoin(String id, Map json) {
+    if (json.containsKey('join')) {
+      String room = json['join']['room'];
+      if (room != null) {
+        _handleJoinRoom(id, room);
+      }
+    }
+  }
+
+  _handleMessage(String id, Map json) {
+    if (json.containsKey('message')) {
+      String text = json['message']['text'];
+      String room = json['message']['room'] ?? _defaultRoom;
+      if (id != null && text != null) {
+        _send({
+          'message': {'room': room, 'text': text}
+        });
+      }
+    }
+  }
+
+  _handleData(String data) {
+    Map json = JSON.decode(data) ?? {};
+    String id = json['id'];
+    if (json != null && id != null) {
+      _handleNameAttempt(id, json);
+      _handleJoin(id, json);
+      _handleMessage(id, json);
     }
   }
 
