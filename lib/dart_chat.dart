@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:mime/mime.dart' as mime;
 
-import 'src/chat_server.dart' as chatServer;
+import 'src/chat_manager.dart';
 
 final String buildPath = Platform.script.resolve('../build/web').toFilePath();
 
@@ -14,7 +14,8 @@ main(List<String> args) async {
     if (request.uri.path == '/ws') {
       // Upgrade an HttpRequest to a WebSocket connection.
       var socket = await WebSocketTransformer.upgrade(request);
-      chatServer.serve(socket);
+      ChatManager manager = new ChatManager(socket);
+      manager.start();
     } else {
       var uri = request.uri.toString();
 
