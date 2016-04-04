@@ -11,24 +11,24 @@ main(List<String> args) async {
   var server = await HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, 8080);
   print("Serving at ${server.address}:${server.port}");
   await for (HttpRequest request in server) {
-    var uri = request.uri.toString();
-
-    // default fo index.html
-    if (uri == '/') {
-      uri = '/index.html';
-    }
-
-    var ext = path.extension(uri);
-    if (ext.isNotEmpty) {
-      _serveStatic(request, uri);
-    } else {
-      _serveNotFound(request);
-    }
-
     if (request.uri.path == '/ws') {
       // Upgrade an HttpRequest to a WebSocket connection.
       var socket = await WebSocketTransformer.upgrade(request);
       chatServer.serve(socket);
+    } else {
+      var uri = request.uri.toString();
+
+      // default fo index.html
+      if (uri == '/') {
+        uri = '/index.html';
+      }
+
+      var ext = path.extension(uri);
+      if (ext.isNotEmpty) {
+        _serveStatic(request, uri);
+      } else {
+        _serveNotFound(request);
+      }
     }
   }
 }
