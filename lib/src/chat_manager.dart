@@ -6,8 +6,6 @@ class ChatManager {
 
   static final Map<String, String> _nickNames = <String, String>{};
 
-  static final List<String> _nameUsed = <String>[];
-
   static final Map<String, String> _currentRoom = <String, String>{};
 
   static final String _defaultRoom = 'Lobby';
@@ -28,7 +26,6 @@ class ChatManager {
     String name = 'Guest$_guestNumber';
     String id = _generateId();
     _nickNames[id] = name;
-    _nameUsed.add(name);
     _guestNumber++;
 
     _send({
@@ -63,7 +60,7 @@ class ChatManager {
             }
           });
         } else {
-          if (_nameUsed.contains(name)) {
+          if (_nickNames.containsValue(name)) {
             _send({
               'nameResult': {
                 'success': false,
@@ -72,9 +69,6 @@ class ChatManager {
             });
           } else {
             var previousName = _nickNames[id];
-            var previousIndex = _nameUsed.indexOf(id);
-            _nameUsed.add(name);
-            _nameUsed.removeAt(previousIndex);
             _nickNames[id] = name;
             _send({
               'nameResult': {'success': true, 'name': name, 'id': id}
