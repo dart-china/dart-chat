@@ -6,13 +6,13 @@ packages:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.27.2"
+    version: "0.27.3-alpha.7"
   angular2:
     description:
       name: angular2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-beta.12"
+    version: "2.0.0-beta.14"
   args:
     description:
       name: args
@@ -66,7 +66,7 @@ packages:
       name: code_transformers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2+1"
+    version: "0.4.2+2"
   collection:
     description:
       name: collection
@@ -102,7 +102,7 @@ packages:
       name: dart_to_js_script_rewriter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0+4"
+    version: "1.0.1"
   fixnum:
     description:
       name: fixnum
@@ -186,7 +186,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.1"
+    version: "1.5.3"
   plugin:
     description:
       name: plugin
@@ -198,7 +198,7 @@ packages:
       name: pool
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.2"
+    version: "1.2.3"
   protobuf:
     description:
       name: protobuf
@@ -258,7 +258,7 @@ packages:
       name: stack_trace
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.4"
+    version: "1.6.5"
   stream_channel:
     description:
       name: stream_channel

@@ -4,63 +4,65 @@ import 'dart:async';
 
 import 'package:test/test.dart';
 
-main(List<String> args) async {
-  Process.start('dart', ['bin/server.dart']).then(run);
-}
-
 WebSocket socket;
-Process mainProcess;
+Process process;
 List<String> guestResults = <String>[];
 
-run(Process process) async {
-  mainProcess = process;
-
-  process.stdout.transform(UTF8.decoder).listen((data) {
-    print('Start chat server...');
-    // OK to run test
-    runTest();
+main(List<String> args) async {
+  setUpAll(() async {
+    process = await Process.start('dart', ['bin/server.dart']);
+    await new Future.delayed(new Duration(seconds: 2));
+    socket = await WebSocket.connect('ws://127.0.0.1:8080/ws');
+    await setupResuts();
   });
 
-  process.stderr.transform(UTF8.decoder).listen((data) {
-    print(data);
+  tearDownAll(() async {
     exit();
   });
+
+  runTests();
 }
 
-runTest() {
-  new Timer(new Duration(seconds: 3), () async {
-    print('Connecting to chat server...');
-    socket = await WebSocket.connect('ws://127.0.0.1:8080/ws');
-    socket.listen(onData);
+Future setupResuts() {
+  Completer completer = new Completer();
 
-    print('Run tests...');
-    new Timer(new Duration(seconds: 3), () {
-      test("Result list length should be 3", () {
-        expect(guestResults.length, equals(3));
-      });
+  socket.listen((String msg) {
+    guestResults.add(msg);
+    if (guestResults.length == 3) {
+      completer.complete();
+    }
+  });
 
-      test("First result should be nameResult", () {
-        expect(guestResults.first,
-            allOf([contains("nameResult"), contains("name"), contains("id")]));
-      });
+  new Timer(new Duration(seconds: 8), () {
+    if (!completer.isCompleted) {
+      completer.completeError('Timeout!');
+    }
+  });
 
-      test("Second result should be roomResult", () {
-        expect(guestResults.elementAt(1),
-            allOf([contains("roomResult"), contains("room"), contains("id")]));
-      });
+  return completer.future;
+}
 
-      test("Third result should be message", () {
-        expect(guestResults.elementAt(2),
-            allOf([contains("message"), contains("room"), contains("text")]));
-      });
+runTests() {
+  group("Guest tests", () {
+    test("Result list length should be 3", () {
+      expect(guestResults.length, equals(3));
+    });
 
-      exit();
+    test("First result should be nameResult", () {
+      expect(guestResults.first,
+          allOf([contains("nameResult"), contains("name"), contains("id")]));
+    });
+
+    test("Second result should be roomResult", () {
+      expect(guestResults.elementAt(1),
+          allOf([contains("roomResult"), contains("room"), contains("id")]));
+    });
+
+    test("Third result should be message", () {
+      expect(guestResults.elementAt(2),
+          allOf([contains("message"), contains("room"), contains("text")]));
     });
   });
-}
-
-onData(String msg) {
-  guestResults.add(msg);
 }
 
 send(WebSocket socket, Map data) {
@@ -68,5 +70,5 @@ send(WebSocket socket, Map data) {
 }
 
 exit() {
-  mainProcess.kill();
+  process.kill();
 }
