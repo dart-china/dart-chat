@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'chat_message.dart';
+
 class ChatManager {
   static int _guestNumber = 1;
 
@@ -28,24 +30,15 @@ class ChatManager {
     _nickNames[id] = name;
     _guestNumber++;
 
-    _send({
-      'nameResult': {'success': true, 'name': name, 'id': id}
-    });
+    _send(new NameResult(name: name, id: id));
 
     return id;
   }
 
   _handleJoinRoom(String guestId, String room) {
     _currentRoom[guestId] = room;
-    _send({
-      'roomResult': {'success': true, 'room': room}
-    });
-    _send({
-      'message': {
-        'room': room,
-        'text': '${_nickNames[guestId]} has joined $room'
-      }
-    });
+    _send(new RoomResult(room: room, id: guestId));
+    _send(new ChatMessage(room, '${_nickNames[guestId]} has joined $room'));
   }
 
   _handleNameAttempt(String id, Map json) {
@@ -53,34 +46,19 @@ class ChatManager {
       String name = json['nameAttemp']['name'];
       if (name != null) {
         if (name.startsWith('Guest')) {
-          _send({
-            'nameResult': {
-              'success': false,
-              'message': 'Names cannot begin with "Guest".'
-            }
-          });
+          _send(new NameResult(
+              success: false, message: 'Names cannot begin with "Guest".'));
         } else {
           if (_nickNames.containsValue(name)) {
-            _send({
-              'nameResult': {
-                'success': false,
-                'message': 'That name is already in use.'
-              }
-            });
+            _send(new NameResult(
+                success: false, message: 'That name is already in use.'));
           } else {
             var previousName = _nickNames[id];
             _nickNames[id] = name;
-            _send({
-              'nameResult': {'success': true, 'name': name, 'id': id}
-            });
-
+            _send(new NameResult(name: name, id: id));
             var currentRoom = _currentRoom[id];
-            _send({
-              'message': {
-                'room': currentRoom,
-                'text': '$previousName is now known as $name'
-              }
-            });
+            _send(new ChatMessage(
+                currentRoom, '$previousName is now known as $name'));
           }
         }
       }
@@ -101,9 +79,7 @@ class ChatManager {
       String text = json['message']['text'];
       String room = json['message']['room'] ?? _defaultRoom;
       if (id != null && text != null) {
-        _send({
-          'message': {'room': room, 'text': text}
-        });
+        _send(new ChatMessage(room, text));
       }
     }
   }
@@ -118,8 +94,8 @@ class ChatManager {
     }
   }
 
-  _send(Map data) {
-    socket.add(JSON.encode(data));
+  _send(Message message) {
+    socket.add(message.toString());
   }
 
   static String _generateId() {
