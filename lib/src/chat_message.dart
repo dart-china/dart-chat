@@ -55,8 +55,7 @@ class ChatMessage extends Message {
   ChatMessage(this.room, this.text);
 
   String toString() {
-    Map result = {};
-    result = {
+    Map result = {
       'message': {'room': room, 'text': text}
     };
     return JSON.encode(result);
