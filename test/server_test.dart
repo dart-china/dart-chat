@@ -64,7 +64,7 @@ runTests() {
   group("Naming tests", () {
     setUpAll(() async {
       Map nameResult = JSON.decode(guestResults[0]);
-      String id = nameResult['nameResult']['id'];
+      String id = nameResult['id'];
       send({
         'id': id,
         'nameAttempt': {'name': 'Guestwho'}
@@ -106,6 +106,53 @@ runTests() {
           namingResults.elementAt(3),
           allOf(
               [contains("nameResult"), contains("false"), contains("in use")]));
+    });
+  });
+
+  group("Join tests", () {
+    setUpAll(() async {
+      Map nameResult = JSON.decode(guestResults[0]);
+      String id = nameResult['id'];
+      send({
+        'id': id,
+        'join': {'room': 'darty'}
+      });
+      await new Future.delayed(new Duration(seconds: 2));
+    });
+
+    test("Join result list length should be 2", () {
+      expect(joinResults.length, equals(2));
+    });
+
+    test("Join should return room result", () {
+      expect(joinResults.first,
+          allOf([contains("roomResult"), contains("room"), contains("id")]));
+    });
+
+    test("Message for join a room", () {
+      expect(joinResults.elementAt(1),
+          allOf([contains("message"), contains("room"), contains("darty")]));
+    });
+  });
+
+  group("Message tests", () {
+    setUpAll(() async {
+      Map nameResult = JSON.decode(guestResults[0]);
+      String id = nameResult['id'];
+      send({
+        'id': id,
+        'message': {'text': 'I\'m in darty'}
+      });
+      await new Future.delayed(new Duration(seconds: 2));
+    });
+
+    test("Message result list length should be 1", () {
+      expect(messageResults.length, equals(1));
+    });
+
+    test("Send message to current room", () {
+      expect(messageResults.first,
+          allOf([contains("message"), contains("text"), contains("darty")]));
     });
   });
 }

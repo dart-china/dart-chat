@@ -14,10 +14,12 @@ class NameResult extends Message {
     Map result = {};
     if (success) {
       result = {
-        'nameResult': {'success': true, 'name': name, 'id': id}
+        'id': id,
+        'nameResult': {'success': true, 'name': name}
       };
     } else {
       result = {
+        'id': id,
         'nameResult': {'success': false, 'message': message}
       };
     }
@@ -37,10 +39,12 @@ class RoomResult extends Message {
     Map result = {};
     if (success) {
       result = {
-        'roomResult': {'success': true, 'room': room, 'id': id}
+        'id': id,
+        'roomResult': {'success': true, 'room': room}
       };
     } else {
       result = {
+        'id': id,
         'roomResult': {'success': false, 'message': message}
       };
     }

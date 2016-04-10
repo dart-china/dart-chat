@@ -77,7 +77,7 @@ class ChatManager {
   _handleMessage(String id, Map json) {
     if (json.containsKey('message')) {
       String text = json['message']['text'];
-      String room = json['message']['room'] ?? _defaultRoom;
+      String room = _currentRoom[id] ?? _defaultRoom;
       if (id != null && text != null) {
         _send(new ChatMessage(room, text));
       }
