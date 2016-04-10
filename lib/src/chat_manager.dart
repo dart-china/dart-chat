@@ -43,7 +43,7 @@ class ChatManager {
 
   _handleNameAttempt(String id, Map json) {
     if (json.containsKey('nameAttempt')) {
-      String name = json['nameAttemp']['name'];
+      String name = json['nameAttempt']['name'];
       if (name != null) {
         if (name.startsWith('Guest')) {
           _send(new NameResult(
