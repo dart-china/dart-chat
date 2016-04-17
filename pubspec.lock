@@ -6,13 +6,13 @@ packages:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.27.3-alpha.7"
+    version: "0.27.3"
   angular2:
     description:
       name: angular2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-beta.14"
+    version: "2.0.0-beta.15"
   args:
     description:
       name: args
@@ -24,7 +24,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.9.0"
+    version: "1.10.0"
   barback:
     description:
       name: barback
@@ -144,7 +144,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.7"
+    version: "0.12.7+1"
   logging:
     description:
       name: logging
@@ -204,7 +204,7 @@ packages:
       name: protobuf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0+1"
+    version: "0.5.1+1"
   pub_semver:
     description:
       name: pub_semver
