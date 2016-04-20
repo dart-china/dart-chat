@@ -4,27 +4,31 @@ import 'dart:convert';
 import 'chat_message.dart';
 
 class ChatManager {
-  static int _guestNumber = 1;
-
   static final Map<String, String> _nickNames = <String, String>{};
 
   static final Map<String, String> _currentRoom = <String, String>{};
 
+  static final Set<WebSocket> _sockets = new Set<WebSocket>();
+
   static final String _defaultRoom = 'Lobby';
 
-  WebSocket socket;
+  static int _guestNumber = 1;
+  
+  WebSocket _socket;
 
-  ChatManager(this.socket);
+  ChatManager(this._socket);
 
   start() {
-    String guestId = _handleGuestIn(socket);
+    _sockets.add(_socket);
+
+    String guestId = _handleGuestIn();
 
     _handleJoinRoom(guestId, _defaultRoom);
 
-    socket.listen(_handleData);
+    _socket.listen(_handleData);
   }
 
-  String _handleGuestIn(WebSocket socket) {
+  String _handleGuestIn() {
     String name = 'Guest$_guestNumber';
     String id = _generateId();
     _nickNames[id] = name;
@@ -95,7 +99,9 @@ class ChatManager {
   }
 
   _send(Message message) {
-    socket.add(message.toString());
+    for (var socket in _sockets) {
+      socket.add(message.toString());
+    }
   }
 
   static String _generateId() {
