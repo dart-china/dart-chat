@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'chat_message.dart';
+import 'message.dart';
 
 class ChatManager {
   static final Map<String, String> _nickNames = <String, String>{};
@@ -13,7 +13,7 @@ class ChatManager {
   static final String _defaultRoom = 'Lobby';
 
   static int _guestNumber = 1;
-  
+
   WebSocket _socket;
 
   ChatManager(this._socket);
