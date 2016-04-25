@@ -10,7 +10,7 @@ class NameResult extends Message {
   NameResult({this.name, this.success: true, this.message});
 
   String toString() {
-    Map result = {};
+    Map result;
     if (success) {
       result = {
         'nameResult': {'success': true, 'name': name}
@@ -32,7 +32,7 @@ class RoomResult extends Message {
   RoomResult({this.room, this.success: true, this.message});
 
   String toString() {
-    Map result = {};
+    Map result;
     if (success) {
       result = {
         'roomResult': {'success': true, 'room': room}
@@ -47,14 +47,13 @@ class RoomResult extends Message {
 }
 
 class ChatMessage extends Message {
-  String room;
   String text;
 
   ChatMessage(this.text);
 
   String toString() {
     Map result = {
-      'message': {'room': room, 'text': text}
+      'message': {'text': text}
     };
     return JSON.encode(result);
   }
