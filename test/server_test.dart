@@ -15,6 +15,11 @@ List<String> messageResults = <String>[];
 main(List<String> args) async {
   setUpAll(() async {
     process = await Process.start('dart', ['bin/server.dart']);
+
+    // Uncomment to see server logs
+    // stdout.addStream(process.stdout);
+    // stderr.addStream(process.stderr);
+
     await new Future.delayed(new Duration(seconds: 2));
     socket = await WebSocket.connect('ws://127.0.0.1:8080/ws');
 
@@ -47,34 +52,29 @@ runTests() {
 
     test("First result should be nameResult", () {
       expect(guestResults.first,
-          allOf([contains("nameResult"), contains("name"), contains("id")]));
+          allOf([contains("nameResult"), contains("name")]));
     });
 
     test("Second result should be roomResult", () {
       expect(guestResults.elementAt(1),
-          allOf([contains("roomResult"), contains("room"), contains("id")]));
+          allOf([contains("roomResult"), contains("room")]));
     });
 
     test("Third result should be message", () {
       expect(guestResults.elementAt(2),
-          allOf([contains("message"), contains("room"), contains("text")]));
+          allOf([contains("message"), contains("text"), contains("Guest")]));
     });
   });
 
   group("Naming tests", () {
     setUpAll(() async {
-      Map nameResult = JSON.decode(guestResults[0]);
-      String id = nameResult['id'];
       send({
-        'id': id,
         'nameAttempt': {'name': 'Guestwho'}
       });
       send({
-        'id': id,
         'nameAttempt': {'name': 'jaron'}
       });
       send({
-        'id': id,
         'nameAttempt': {'name': 'jaron'}
       });
       await new Future.delayed(new Duration(seconds: 2));
@@ -98,7 +98,7 @@ runTests() {
 
     test("Should send renaming message to current room", () {
       expect(namingResults.elementAt(2),
-          allOf([contains("message"), contains("room"), contains("jaron")]));
+          allOf([contains("message"), contains("jaron")]));
     });
 
     test("That name is already in use", () {
@@ -111,10 +111,7 @@ runTests() {
 
   group("Join tests", () {
     setUpAll(() async {
-      Map nameResult = JSON.decode(guestResults[0]);
-      String id = nameResult['id'];
       send({
-        'id': id,
         'join': {'room': 'darty'}
       });
       await new Future.delayed(new Duration(seconds: 2));
@@ -126,21 +123,18 @@ runTests() {
 
     test("Join should return room result", () {
       expect(joinResults.first,
-          allOf([contains("roomResult"), contains("room"), contains("id")]));
+          allOf([contains("roomResult"), contains("room")]));
     });
 
     test("Message for join a room", () {
       expect(joinResults.elementAt(1),
-          allOf([contains("message"), contains("room"), contains("darty")]));
+          allOf([contains("message"), contains("darty")]));
     });
   });
 
   group("Message tests", () {
     setUpAll(() async {
-      Map nameResult = JSON.decode(guestResults[0]);
-      String id = nameResult['id'];
       send({
-        'id': id,
         'message': {'text': 'I\'m in darty'}
       });
       await new Future.delayed(new Duration(seconds: 2));

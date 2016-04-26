@@ -24,6 +24,7 @@ class ChatManager {
     User user = new User(socket);
     lobby.addUser(user);
 
+    _userSend(user, new NameResult(name: user.nickname));
     _userSend(user, new RoomResult(room: lobby.name));
     _roomSend(lobby, new ChatMessage('${user.nickname} has joined ${lobby.name}'));
   }
@@ -108,6 +109,7 @@ class User {
             _userSend(this, new NameResult(name: name));
             _roomSend(room, new ChatMessage('$nickname is now known as $name'));
             nickname = name;
+            _nicknames.add(nickname);
           }
         }
       }
