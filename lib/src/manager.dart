@@ -31,23 +31,19 @@ class ChatManager {
 }
 
 class Room {
-  static final Set<String> roomNames = new Set<String>();
-
-  static final Map<String, Room> rooms = <String, Room>{};
+  static final Map<String, Room> roomMap = <String, Room>{};
 
   Set<User> users = new Set<User>();
 
   String name;
 
   factory Room.create(String name) {
-    roomNames.add(name);
-
     Room room;
-    if (rooms.containsKey(name)) {
-      room = rooms[name];
+    if (roomMap.containsKey(name)) {
+      room = roomMap[name];
     } else {
       room = new Room._internal(name);
-      rooms[name] = room;
+      roomMap[name] = room;
     }
     return room;
   }
@@ -62,6 +58,14 @@ class Room {
   removeUser(User user) {
     users.remove(user);
     user.room = null;
+  }
+
+  List<String> get roomNames {
+    return roomMap.keys;
+  }
+
+  List<Room> get roomList {
+    return roomMap.values;
   }
 }
 
