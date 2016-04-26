@@ -1,110 +1,141 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
 
 import 'message.dart';
 
+_roomSend(Room room, Message message) {
+  for (User user in room.users) {
+    if (user.socket != null) {
+      user.socket.add(message.toString());
+    }
+  }
+}
+
+_userSend(User user, Message message) {
+  user.socket.add(message.toString());
+}
+
 class ChatManager {
-  static final Map<String, String> _nickNames = <String, String>{};
+  static final Room lobby = new Room.create('Lobby');
 
-  static final Map<String, String> _currentRoom = <String, String>{};
+  static final Set<Room> roomList = new Set<Room>();
 
-  static final Set<WebSocket> _sockets = new Set<WebSocket>();
+  static serve(WebSocket socket) {
+    User user = new User(socket);
+    lobby.addUser(user);
 
-  static final String _defaultRoom = 'Lobby';
+    _userSend(user, new NameResult(name: user.nickname));
+    _userSend(user, new RoomResult(room: lobby.name));
+    _roomSend(lobby, new ChatMessage('${user.nickname} has joined ${lobby.name}'));
+  }
+}
 
-  static int _guestNumber = 1;
+class Room {
+  static final Set<String> roomNames = new Set<String>();
 
-  WebSocket _socket;
+  static final Map<String, Room> rooms = <String, Room>{};
 
-  ChatManager(this._socket);
+  Set<User> users = new Set<User>();
 
-  start() {
-    _sockets.add(_socket);
+  String name;
 
-    String guestId = _handleGuestIn();
+  factory Room.create(String name) {
+    roomNames.add(name);
 
-    _handleJoinRoom(guestId, _defaultRoom);
-
-    _socket.listen(_handleData);
+    Room room;
+    if (rooms.containsKey(name)) {
+      room = rooms[name];
+    } else {
+      room = new Room._internal(name);
+      rooms[name] = room;
+    }
+    return room;
   }
 
-  String _handleGuestIn() {
-    String name = 'Guest$_guestNumber';
-    String id = _generateId();
-    _nickNames[id] = name;
+  Room._internal(this.name);
+
+  addUser(User user) {
+    users.add(user);
+    user.room = this;
+  }
+
+  removeUser(User user) {
+    users.remove(user);
+    user.room = null;
+  }
+}
+
+class User {
+  static final Set<String> _nicknames = new Set<String>();
+
+  static int _guestNumber = 0;
+
+  WebSocket socket;
+
+  Room room;
+
+  String nickname;
+
+  User(this.socket) {
     _guestNumber++;
+    nickname = 'Guest$_guestNumber';
+    _nicknames.add(nickname);
 
-    _send(new NameResult(name: name, id: id));
-
-    return id;
+    socket.listen(_handleData);
   }
 
-  _handleJoinRoom(String guestId, String room) {
-    _currentRoom[guestId] = room;
-    _send(new RoomResult(room: room, id: guestId));
-    _send(new ChatMessage(room, '${_nickNames[guestId]} has joined $room'));
+  _handleData(String data) {
+    Map json = JSON.decode(data);
+    if (json != null) {
+      _handleNameAttempt(json);
+      _handleJoin(json);
+      _handleMessage(json);
+    }
   }
 
-  _handleNameAttempt(String id, Map json) {
+  _handleNameAttempt(Map json) {
     if (json.containsKey('nameAttempt')) {
       String name = json['nameAttempt']['name'];
       if (name != null) {
         if (name.startsWith('Guest')) {
-          _send(new NameResult(
+          _userSend(this, new NameResult(
               success: false, message: 'Names cannot begin with "Guest".'));
         } else {
-          if (_nickNames.containsValue(name)) {
-            _send(new NameResult(
+          if (_nicknames.contains(name)) {
+            _userSend(this, new NameResult(
                 success: false, message: 'That name is already in use.'));
           } else {
-            var previousName = _nickNames[id];
-            _nickNames[id] = name;
-            _send(new NameResult(name: name, id: id));
-            var currentRoom = _currentRoom[id];
-            _send(new ChatMessage(
-                currentRoom, '$previousName is now known as $name'));
+            _nicknames.remove(nickname);
+            _userSend(this, new NameResult(name: name));
+            _roomSend(room, new ChatMessage('$nickname is now known as $name'));
+            nickname = name;
+            _nicknames.add(nickname);
           }
         }
       }
     }
   }
 
-  _handleJoin(String id, Map json) {
+  _handleJoin(Map json) {
     if (json.containsKey('join')) {
-      String room = json['join']['room'];
-      if (room != null) {
-        _handleJoinRoom(id, room);
+      String roomName = json['join']['room'];
+      if (roomName != null) {
+        room.removeUser(this);
+        room = new Room.create(roomName);
+        room.addUser(this);
+
+        _userSend(this, new RoomResult(room: roomName));
+        _roomSend(room, new ChatMessage('$nickname has joined $roomName'));
       }
     }
   }
 
-  _handleMessage(String id, Map json) {
+  _handleMessage(Map json) {
     if (json.containsKey('message')) {
       String text = json['message']['text'];
-      String room = _currentRoom[id] ?? _defaultRoom;
-      if (id != null && text != null) {
-        _send(new ChatMessage(room, text));
+      if (text != null) {
+        _roomSend(room, new ChatMessage(text));
       }
     }
-  }
-
-  _handleData(String data) {
-    Map json = JSON.decode(data) ?? {};
-    String id = json['id'];
-    if (json != null && id != null) {
-      _handleNameAttempt(id, json);
-      _handleJoin(id, json);
-      _handleMessage(id, json);
-    }
-  }
-
-  _send(Message message) {
-    for (var socket in _sockets) {
-      socket.add(message.toString());
-    }
-  }
-
-  static String _generateId() {
-    return new DateTime.now().millisecondsSinceEpoch.toString();
   }
 }

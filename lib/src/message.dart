@@ -5,21 +5,18 @@ abstract class Message {}
 class NameResult extends Message {
   bool success = false;
   String name;
-  String id;
   String message;
 
-  NameResult({this.name, this.id, this.success: true, this.message});
+  NameResult({this.name, this.success: true, this.message});
 
   String toString() {
-    Map result = {};
+    Map result;
     if (success) {
       result = {
-        'id': id,
         'nameResult': {'success': true, 'name': name}
       };
     } else {
       result = {
-        'id': id,
         'nameResult': {'success': false, 'message': message}
       };
     }
@@ -30,21 +27,18 @@ class NameResult extends Message {
 class RoomResult extends Message {
   bool success = false;
   String room;
-  String id;
   String message;
 
-  RoomResult({this.room, this.id, this.success: true, this.message});
+  RoomResult({this.room, this.success: true, this.message});
 
   String toString() {
-    Map result = {};
+    Map result;
     if (success) {
       result = {
-        'id': id,
         'roomResult': {'success': true, 'room': room}
       };
     } else {
       result = {
-        'id': id,
         'roomResult': {'success': false, 'message': message}
       };
     }
@@ -53,14 +47,13 @@ class RoomResult extends Message {
 }
 
 class ChatMessage extends Message {
-  String room;
   String text;
 
-  ChatMessage(this.room, this.text);
+  ChatMessage(this.text);
 
   String toString() {
     Map result = {
-      'message': {'room': room, 'text': text}
+      'message': {'text': text}
     };
     return JSON.encode(result);
   }

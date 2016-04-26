@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:mime/mime.dart' as mime;
 
-import 'src/manager2.dart';
+import 'src/manager.dart';
 
 final String buildPath = Platform.script.resolve('../build/web').toFilePath();
 
