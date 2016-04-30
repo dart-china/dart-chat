@@ -85,7 +85,7 @@ class User {
     nickname = 'Guest$_guestNumber';
     _nicknames.add(nickname);
 
-    socket.listen(_handleData);
+    socket.listen(_handleData, onDone: _handleDone);
   }
 
   _handleData(String data) {
@@ -95,6 +95,11 @@ class User {
       _handleJoin(json);
       _handleMessage(json);
     }
+  }
+
+  _handleDone() {
+    _nicknames.remove(nickname);
+    room.removeUser(this);
   }
 
   _handleNameAttempt(Map json) {

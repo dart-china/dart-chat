@@ -21,7 +21,7 @@ main(List<String> args) async {
     // stderr.addStream(process.stderr);
 
     await new Future.delayed(new Duration(seconds: 2));
-    socket = await WebSocket.connect('ws://127.0.0.1:8080/ws');
+    socket = await WebSocket.connect('ws://127.0.0.1:9090/ws');
 
     socket.listen((data) {
       resultCounter++;

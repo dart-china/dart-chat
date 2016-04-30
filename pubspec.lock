@@ -12,7 +12,7 @@ packages:
       name: angular2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-beta.15"
+    version: "2.0.0-beta.17"
   args:
     description:
       name: args
@@ -48,7 +48,7 @@ packages:
       name: build
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "0.3.0+1"
   charcode:
     description:
       name: charcode
@@ -78,7 +78,7 @@ packages:
       name: convert
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.1"
   crypto:
     description:
       name: crypto
@@ -90,7 +90,7 @@ packages:
       name: csslib
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.2"
+    version: "0.13.1"
   dart_style:
     description:
       name: dart_style
@@ -108,7 +108,7 @@ packages:
       name: fixnum
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.2"
+    version: "0.10.4"
   func:
     description:
       name: func
@@ -126,7 +126,7 @@ packages:
       name: html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.2+1"
+    version: "0.12.2+2"
   http_multi_server:
     description:
       name: http_multi_server
@@ -150,7 +150,7 @@ packages:
       name: logging
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.11.2"
+    version: "0.11.3"
   matcher:
     description:
       name: matcher
@@ -204,7 +204,7 @@ packages:
       name: protobuf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.1+1"
+    version: "0.5.1"
   pub_semver:
     description:
       name: pub_semver
@@ -276,7 +276,7 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.13"
+    version: "0.12.13+1"
   typed_data:
     description:
       name: typed_data
@@ -319,4 +319,4 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.8"
-sdk: ">=1.14.0 <1.17.0"
+sdk: ">=1.16.0 <1.18.0"
