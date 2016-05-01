@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'src/server/manager.dart';
 
-main(List<String> args) async {
-  var server = await HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, 9090);
+start(int port) async {
+  var server = await HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, port);
   print("Serving at ${server.address}:${server.port}");
   await for (HttpRequest request in server) {
     print(request.uri.path);
