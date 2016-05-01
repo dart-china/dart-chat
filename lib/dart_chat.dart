@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'src/manager.dart';
+import 'src/server/manager.dart';
 
 main(List<String> args) async {
   var server = await HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, 9090);
