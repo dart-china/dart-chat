@@ -1,13 +1,11 @@
 import 'dart:io';
-import 'dart:convert';
 import 'dart:async';
 
 import 'package:test/test.dart';
+import 'package:dart_chat/chat_client.dart';
 
-WebSocket socket;
+ChatClientIo client;
 Process process;
-int resultCounter = 0;
-List<String> guestResults = <String>[];
 List<String> namingResults = <String>[];
 List<String> joinResults = <String>[];
 List<String> messageResults = <String>[];
@@ -21,20 +19,17 @@ main(List<String> args) async {
     // stderr.addStream(process.stderr);
 
     await new Future.delayed(new Duration(seconds: 2));
-    socket = await WebSocket.connect('ws://127.0.0.1:9090/ws');
 
-    socket.listen((data) {
-      resultCounter++;
-      if (resultCounter <= 3) {
-        guestResults.add(data);
-      } else if (resultCounter > 3 && resultCounter <= 7) {
-        namingResults.add(data);
-      } else if (resultCounter > 7 && resultCounter <= 9) {
-        joinResults.add(data);
-      } else if (resultCounter > 9 && resultCounter <= 10) {
-        messageResults.add(data);
-      }
+    client = new ChatClientIo();
+    client.init('ws://127.0.0.1:9090/ws', onMessage: (String message) {
+      messageResults.add(message);
+    }, onRoomResult: (bool success, String data) {
+      joinResults.add(data);
+    }, onNameResult: (bool success, String data) {
+      namingResults.add(data);
     });
+
+    await new Future.delayed(new Duration(seconds: 2));
   });
 
   tearDownAll(() async {
@@ -47,96 +42,81 @@ main(List<String> args) async {
 runTests() {
   group("Guest tests", () {
     test("Result list length should be 3", () {
-      expect(guestResults.length, equals(3));
+      expect(namingResults.length + joinResults.length + messageResults.length,
+          equals(3));
     });
 
-    test("First result should be nameResult", () {
-      expect(guestResults.first,
-          allOf([contains("nameResult"), contains("name")]));
+    test("NameResult should be Guest1", () {
+      expect(namingResults.first, equals("Guest1"));
     });
 
-    test("Second result should be roomResult", () {
-      expect(guestResults.elementAt(1),
-          allOf([contains("roomResult"), contains("room")]));
+    test("RoomResult should be Lobby", () {
+      expect(joinResults.first, equals('Lobby'));
     });
 
-    test("Third result should be message", () {
-      expect(guestResults.elementAt(2),
-          allOf([contains("message"), contains("text"), contains("Guest")]));
+    test("Message should contains Guest1, joined, Lobby", () {
+      expect(messageResults.first,
+          allOf([contains("Guest1"), contains("joined"), contains("Lobby")]));
     });
   });
 
   group("Naming tests", () {
     setUpAll(() async {
-      send({
-        'nameAttempt': {'name': 'Guestwho'}
-      });
-      send({
-        'nameAttempt': {'name': 'jaron'}
-      });
-      send({
-        'nameAttempt': {'name': 'jaron'}
-      });
+      clearResults();
+      client.rename('Guestwho');
+      client.rename('jaron');
+      client.rename('jaron');
       await new Future.delayed(new Duration(seconds: 2));
     });
 
     test("Naming result list length should be 4", () {
-      expect(namingResults.length, equals(4));
+      expect(namingResults.length + messageResults.length, equals(4));
     });
 
     test("Names cannot begin with 'Guest'", () {
       expect(
-          namingResults.first,
-          allOf(
-              [contains("nameResult"), contains("false"), contains("cannot")]));
+          namingResults.first, allOf([contains("cannot"), contains('Guest')]));
     });
 
     test("Rename to jaron should be ok", () {
-      expect(namingResults.elementAt(1),
-          allOf([contains("nameResult"), contains("name"), contains("jaron")]));
+      expect(namingResults.elementAt(1), equals("jaron"));
     });
 
     test("Should send renaming message to current room", () {
-      expect(namingResults.elementAt(2),
-          allOf([contains("message"), contains("jaron")]));
+      expect(
+          messageResults.first, allOf([contains("Guest1"), contains("jaron")]));
     });
 
     test("That name is already in use", () {
-      expect(
-          namingResults.elementAt(3),
-          allOf(
-              [contains("nameResult"), contains("false"), contains("in use")]));
+      expect(namingResults.elementAt(2), allOf([contains("in use")]));
     });
   });
 
   group("Join tests", () {
     setUpAll(() async {
-      send({
-        'join': {'room': 'darty'}
-      });
+      clearResults();
+      client.join('darty');
       await new Future.delayed(new Duration(seconds: 2));
     });
 
     test("Join result list length should be 2", () {
-      expect(joinResults.length, equals(2));
+      expect(joinResults.length + messageResults.length, equals(2));
     });
 
     test("Join should return room result", () {
-      expect(joinResults.first,
-          allOf([contains("roomResult"), contains("room")]));
+      expect(joinResults.first, equals('darty'));
     });
 
     test("Message for join a room", () {
-      expect(joinResults.elementAt(1),
-          allOf([contains("message"), contains("darty")]));
+      expect(
+          messageResults.first, allOf([contains("jaron"), contains("darty")]));
     });
   });
 
   group("Message tests", () {
     setUpAll(() async {
-      send({
-        'message': {'text': 'I\'m in darty'}
-      });
+      clearResults();
+      client.sendMessage('I\'m in darty');
       await new Future.delayed(new Duration(seconds: 2));
     });
 
@@ -145,16 +125,17 @@ runTests() {
     });
 
     test("Send message to current room", () {
-      expect(messageResults.first,
-          allOf([contains("message"), contains("text"), contains("darty")]));
+      expect(messageResults.first, allOf([contains("darty")]));
     });
   });
 }
 
-send(Map data) {
-  socket.add(JSON.encode(data));
-}
-
 exit() {
   process.kill();
+}
+
+clearResults() {
+  namingResults.clear();
+  joinResults.clear();
+  messageResults.clear();
 }

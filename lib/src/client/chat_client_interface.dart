@@ -1,13 +1,17 @@
 typedef void MessageCallback(String msg);
+typedef void ResultCallback(bool success, String msg);
 
 abstract class ChatClient {
   MessageCallback onMessage;
 
-  MessageCallback onNameResult;
+  ResultCallback onNameResult;
 
-  MessageCallback onRoomResult;
+  ResultCallback onRoomResult;
 
-  init(String url, MessageCallback onMessage, MessageCallback onNameResult, MessageCallback onRoomResult);
+  init(String url,
+      {MessageCallback onMessage,
+      ResultCallback onNameResult,
+      ResultCallback onRoomResult});
 
   rename(String name);
 

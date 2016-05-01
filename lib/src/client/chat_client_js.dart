@@ -8,11 +8,14 @@ class ChatClientJs implements ChatClient {
 
   MessageCallback onMessage;
 
-  MessageCallback onNameResult;
+  ResultCallback onNameResult;
 
-  MessageCallback onRoomResult;
+  ResultCallback onRoomResult;
 
-  init(String url, MessageCallback onMessage, MessageCallback onNameResult, MessageCallback onRoomResult) {
+  init(String url,
+      {MessageCallback onMessage,
+      ResultCallback onNameResult,
+      ResultCallback onRoomResult}) {
     _socket = new WebSocket(url);
     this.onMessage = onMessage;
     this.onNameResult = onNameResult;
@@ -40,10 +43,21 @@ class ChatClientJs implements ChatClient {
 
   _handleMessage(String data) {
     Map json = JSON.decode(data);
-    if (json.containsKey('nameResult')) {
-      onNameResult(json['nameResult']['name']);
-    } else if (json.containsKey('roomResult')) {
-      onRoomResult(json['roomResult']['room']);
+    bool success = false;
+    if (json.containsKey('nameResult') && onNameResult != null) {
+      success = json['nameResult']['success'];
+      if (success) {
+        onNameResult(true, json['nameResult']['name']);
+      } else {
+        onNameResult(false, json['nameResult']['message']);
+      }
+    } else if (json.containsKey('roomResult') && onRoomResult != null) {
+      success = json['roomResult']['success'];
+      if (success) {
+        onRoomResult(true, json['roomResult']['room']);
+      } else {
+        onRoomResult(false, json['roomResult']['message']);
+      }
     } else if (json.containsKey('message') && onMessage != null) {
       onMessage(json['message']['text']);
     }
@@ -55,25 +69,19 @@ class ChatClientJs implements ChatClient {
 
   rename(String name) {
     _send({
-      'nameAttempt': {
-        'name': name
-      }
+      'nameAttempt': {'name': name}
     });
   }
 
   join(String room) {
     _send({
-      'join': {
-        'room': room
-      }
+      'join': {'room': room}
     });
   }
 
   sendMessage(String text) {
     _send({
-      'message': {
-        'text': text
-      }
+      'message': {'text': text}
     });
   }
 }
