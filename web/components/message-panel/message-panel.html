@@ -4,4 +4,6 @@
     <li *ngFor="#room of roomList"><a href="#">{{ room }}</a></li>
   </ul>
 </div>
-<div id='messages'></div>
+<div id='messages'>
+    <div *ngFor="#message of messageList">{{ message }}</div>
+</div>
