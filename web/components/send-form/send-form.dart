@@ -5,6 +5,8 @@ class SendForm {
   static final String _nickCommand = '/nick';
   static final String _joinCommand = '/join';
 
+  String message;
+
   @Output()
   EventEmitter onSendJoin = new EventEmitter();
 
@@ -14,16 +16,17 @@ class SendForm {
   @Output()
   EventEmitter onSendMessage = new EventEmitter();
 
-  sendMessage(String msg) {
+  sendMessage() {
     var commandData;
-    if (msg.startsWith(_nickCommand)) {
-      commandData = msg.substring(_nickCommand.length).trim();
+    if (message.startsWith(_nickCommand)) {
+      commandData = message.substring(_nickCommand.length).trim();
       onSendNickname.add(commandData);
-    } else if (msg.startsWith(_joinCommand)) {
-      commandData = msg.substring(_joinCommand.length).trim();
+    } else if (message.startsWith(_joinCommand)) {
+      commandData = message.substring(_joinCommand.length).trim();
       onSendJoin.add(commandData);
     } else {
-      onSendMessage.add(msg);
+      onSendMessage.add(message);
     }
+    message = '';
   }
 }

@@ -11,5 +11,10 @@ class MessagePanel {
   @Input()
   List<String> messageList;
 
-  MessagePanel() {}
+  @Output()
+  EventEmitter onChangeRoom = new EventEmitter();
+
+  onClickRoom(String room) {
+    onChangeRoom.add(room);
+  }
 }

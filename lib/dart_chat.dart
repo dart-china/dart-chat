@@ -6,7 +6,6 @@ start(int port) async {
   var server = await HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, port);
   print("Serving at ${server.address}:${server.port}");
   await for (HttpRequest request in server) {
-    print(request.uri.path);
     if (request.uri.path == '/ws') {
       // Upgrade an HttpRequest to a WebSocket connection.
       var socket = await WebSocketTransformer.upgrade(request);

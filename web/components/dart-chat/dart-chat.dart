@@ -42,6 +42,12 @@ class DartChat {
     }
   }
 
+  onChangeRoom(String room) {
+    if (room != _currentRoom) {
+      onSendJoin(room);
+    }
+  }
+
   onSendJoin(String data) {
     client.join(data);
 
