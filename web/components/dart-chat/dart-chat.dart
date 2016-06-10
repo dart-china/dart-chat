@@ -44,6 +44,10 @@ class DartChat {
 
   onSendJoin(String data) {
     client.join(data);
+
+    if (roomList.indexOf(data) == -1) {
+      roomList.add(data);
+    }
   }
 
   onSendNickname(String data) {
@@ -51,7 +55,6 @@ class DartChat {
   }
 
   onSendMessage(String msg) {
-    print('send $msg');
     client.sendMessage(msg);
   }
 }

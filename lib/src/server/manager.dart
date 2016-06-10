@@ -26,7 +26,8 @@ class ChatManager {
 
     _userSend(user, new NameResult(name: user.nickname));
     _userSend(user, new RoomResult(room: lobby.name));
-    _roomSend(lobby, new ChatMessage('${user.nickname} has joined ${lobby.name}'));
+    _roomSend(
+        lobby, new ChatMessage('${user.nickname} has joined ${lobby.name}'));
   }
 }
 
@@ -107,12 +108,16 @@ class User {
       String name = json['nameAttempt']['name'];
       if (name != null) {
         if (name.startsWith('Guest')) {
-          _userSend(this, new NameResult(
-              success: false, message: 'Names cannot begin with "Guest".'));
+          _userSend(
+              this,
+              new NameResult(
+                  success: false, message: 'Names cannot begin with "Guest".'));
         } else {
           if (_nicknames.contains(name)) {
-            _userSend(this, new NameResult(
-                success: false, message: 'That name is already in use.'));
+            _userSend(
+                this,
+                new NameResult(
+                    success: false, message: 'That name is already in use.'));
           } else {
             _nicknames.remove(nickname);
             _userSend(this, new NameResult(name: name));
@@ -143,7 +148,7 @@ class User {
     if (json.containsKey('message')) {
       String text = json['message']['text'];
       if (text != null) {
-        _roomSend(room, new ChatMessage(text));
+        _roomSend(room, new ChatMessage('$nickname: $text'));
       }
     }
   }

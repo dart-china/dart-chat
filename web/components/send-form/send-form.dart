@@ -21,7 +21,7 @@ class SendForm {
       onSendNickname.add(commandData);
     } else if (msg.startsWith(_joinCommand)) {
       commandData = msg.substring(_joinCommand.length).trim();
-      onSendNickname.add(commandData);
+      onSendJoin.add(commandData);
     } else {
       onSendMessage.add(msg);
     }
