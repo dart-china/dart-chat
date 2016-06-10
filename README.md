@@ -11,6 +11,10 @@ A chat app build with Angular2 Dart and Dart VM.
 
 ### 3. Visit - http://localhost:8080
 
+## Screenshot
+
+![ScreenShot](https://raw.githubusercontent.com/dartlang-china/dart-chat/develop/dart-chat.png)
+
 ## Test
 
     dart test/server_test.dart
