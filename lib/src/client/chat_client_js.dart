@@ -67,18 +67,21 @@ class ChatClientJs implements ChatClient {
     _socket.sendString(JSON.encode(data));
   }
 
+  /// Attempt to rename
   rename(String name) {
     _send({
       'nameAttempt': {'name': name}
     });
   }
 
+  /// Join room
   join(String room) {
     _send({
       'join': {'room': room}
     });
   }
 
+  /// Send chat text message
   sendMessage(String text) {
     _send({
       'message': {'text': text}

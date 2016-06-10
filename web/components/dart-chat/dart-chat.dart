@@ -26,7 +26,7 @@ class DartChat {
   }
 
   _onMessage(String message) {
-    messageList.add('message: $message');
+    messageList.add('$message');
   }
 
   _onRoomResult(bool success, String room) {
@@ -40,5 +40,18 @@ class DartChat {
     if (success) {
       messageList.add('You are known as $name');
     }
+  }
+
+  onSendJoin(String data) {
+    client.join(data);
+  }
+
+  onSendNickname(String data) {
+    client.rename(data);
+  }
+
+  onSendMessage(String msg) {
+    print('send $msg');
+    client.sendMessage(msg);
   }
 }

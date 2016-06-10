@@ -1,6 +1,6 @@
 <form id='send-form'>
-  <input id='send-message' />
-  <input id='send-button' type='submit' value='Send'/>
+  <input id='send-message' #message/>
+  <input id='send-button' (click)='sendMessage(message.value)' type='submit' value='Send'/>
 
   <div id='help'>
     Chat commands:

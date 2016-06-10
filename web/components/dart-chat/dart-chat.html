@@ -1,4 +1,4 @@
 <div id='content'>
   <message-panel [currentRoom]="currentRoom" [roomList]="roomList" [messageList]="messageList"></message-panel>
-  <send-form></send-form>
+  <send-form (onSendJoin)="onSendJoin($event)" (onSendNickname)="onSendNickname($event)" (onSendMessage)="onSendMessage($event)"></send-form>
 </div>
