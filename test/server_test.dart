@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:test/test.dart';
-import 'package:dart_chat/chat_client_io.dart';
+import 'package:dart_chat/chat_client.dart';
 
 ChatClientIo client;
 Process process;

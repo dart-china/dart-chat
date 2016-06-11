@@ -1,5 +1,5 @@
 import 'package:angular2/core.dart';
-import 'package:dart_chat/chat_client_js.dart';
+import 'package:dart_chat/chat_service.dart';
 
 import '../message-panel/message-panel.dart';
 import '../send-form/send-form.dart';
@@ -7,6 +7,7 @@ import '../send-form/send-form.dart';
 @Component(
     selector: 'dart-chat',
     templateUrl: './dart-chat.html',
+    providers: const [ChatService],
     directives: const [MessagePanel, SendForm])
 class DartChat {
   static final String _defaultRoom = 'Lobby';
@@ -16,10 +17,11 @@ class DartChat {
 
   String get currentRoom => _currentRoom;
 
-  ChatClientJs client = new ChatClientJs();
+  ChatService chatService;
 
-  DartChat() {
-    client.init('ws://127.0.0.1:9090/ws',
+  DartChat(ChatService chatService) {
+    this.chatService = chatService;
+    this.chatService.init('ws://127.0.0.1:9090/ws',
         onMessage: _onMessage,
         onRoomResult: _onRoomResult,
         onNameResult: _onNameResult);
@@ -49,7 +51,7 @@ class DartChat {
   }
 
   onSendJoin(String data) {
-    client.join(data);
+    chatService.join(data);
 
     if (roomList.indexOf(data) == -1) {
       roomList.add(data);
@@ -57,10 +59,10 @@ class DartChat {
   }
 
   onSendNickname(String data) {
-    client.rename(data);
+    chatService.rename(data);
   }
 
   onSendMessage(String msg) {
-    client.sendMessage(msg);
+    chatService.sendMessage(msg);
   }
 }

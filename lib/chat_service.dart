@@ -1,9 +1,12 @@
 import 'dart:html';
 import 'dart:convert';
 
-import 'chat_client_interface.dart';
+import 'package:angular2/core.dart';
 
-class ChatClientJs implements ChatClient {
+import 'src/client/chat_client_interface.dart';
+
+@Injectable()
+class ChatService implements ChatClient {
   WebSocket _socket;
 
   MessageCallback onMessage;

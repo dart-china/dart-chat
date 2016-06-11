@@ -1,9 +1,9 @@
 <div id='room'>{{ currentRoom }}</div>
 <div id='room-list'>
   <ul>
-    <li *ngFor="#room of roomList"><a href="javascript:void(0)" (click)="onClickRoom(room)">{{ room }}</a></li>
+    <li *ngFor="let room of roomList"><a href="javascript:void(0)" (click)="onClickRoom(room)">{{ room }}</a></li>
   </ul>
 </div>
 <div id='messages'>
-    <div *ngFor="#message of messageList">{{ message }}</div>
+    <div *ngFor="let message of messageList">{{ message }}</div>
 </div>
