@@ -15,7 +15,7 @@ A chat app build with Angular2 Dart and Dart VM.
 ### 3. Open another terminal, run the chat web app
     pub serve
 
-### 3. Visit - http://localhost:8080
+### 4. Visit - http://localhost:8080
 
 ## Screenshot
 
