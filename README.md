@@ -3,10 +3,16 @@ A chat app build with Angular2 Dart and Dart VM.
 
 ## Run
 
-### 1. Open a terminal, start the chat server
+### 0. Ensure the installation of Dart SDK
+    dart --version
+
+### 1. Get dependencies
+    pub get
+
+### 2. Start the chat server
     dart bin/server.dart
 
-### 2. Open another terminal, run the chat web app
+### 3. Open another terminal, run the chat web app
     pub serve
 
 ### 3. Visit - http://localhost:8080
