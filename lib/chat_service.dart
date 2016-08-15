@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:angular2/core.dart';
 
-import 'src/client/chat_client_interface.dart';
+import 'src/client/client_interface.dart';
 
 @Injectable()
 class ChatService implements ChatClient {

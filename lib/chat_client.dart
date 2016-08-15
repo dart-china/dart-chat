@@ -1,1 +1,2 @@
-export 'src/client/chat_client_io.dart';
+export 'src/client/client_interface.dart';
+export 'src/client/client_io.dart';

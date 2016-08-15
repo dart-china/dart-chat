@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'chat_client_interface.dart';
+import 'client_interface.dart';
 
 class ChatClientIo implements ChatClient {
   WebSocket _socket;
