@@ -3,18 +3,6 @@ import 'dart:io';
 
 import 'message.dart';
 
-_roomSend(Room room, Message message) {
-  for (User user in room.users) {
-    if (user.socket != null) {
-      user.socket.add(message.toString());
-    }
-  }
-}
-
-_userSend(User user, Message message) {
-  user.socket.add(message.toString());
-}
-
 class ChatManager {
   static final Room lobby = new Room.create('Lobby');
 
@@ -24,10 +12,9 @@ class ChatManager {
     User user = new User(socket);
     lobby.addUser(user);
 
-    _userSend(user, new NameResult(name: user.nickname));
-    _userSend(user, new RoomResult(room: lobby.name));
-    _roomSend(
-        lobby, new ChatMessage('${user.nickname} has joined ${lobby.name}'));
+    new NameMessage(name: user.nickname).send(user);
+    new RoomMessage(room: lobby.name).send(user);
+    new ChatMessage('${user.nickname} has joined ${lobby.name}').send(user);
   }
 }
 
@@ -108,20 +95,18 @@ class User {
       String name = json['nameAttempt']['name'];
       if (name != null) {
         if (name.startsWith('Guest')) {
-          _userSend(
-              this,
-              new NameResult(
-                  success: false, message: 'Names cannot begin with "Guest".'));
+          new NameMessage(
+                  success: false, message: 'Names cannot begin with "Guest".')
+              .send(this);
         } else {
           if (_nicknames.contains(name)) {
-            _userSend(
-                this,
-                new NameResult(
-                    success: false, message: 'That name is already in use.'));
+            new NameMessage(
+                    success: false, message: 'That name is already in use.')
+                .send(this);
           } else {
             _nicknames.remove(nickname);
-            _userSend(this, new NameResult(name: name));
-            _roomSend(room, new ChatMessage('$nickname is now known as $name'));
+            new NameMessage(name: name).send(this);
+            new ChatMessage('$nickname is now known as $name').send(this);
             nickname = name;
             _nicknames.add(nickname);
           }
@@ -138,8 +123,8 @@ class User {
         room = new Room.create(roomName);
         room.addUser(this);
 
-        _userSend(this, new RoomResult(room: roomName));
-        _roomSend(room, new ChatMessage('$nickname has joined $roomName'));
+        new RoomMessage(room: roomName).send(this);
+        new ChatMessage('$nickname has joined $roomName').send(this);
       }
     }
   }
@@ -148,7 +133,7 @@ class User {
     if (json.containsKey('message')) {
       String text = json['message']['text'];
       if (text != null) {
-        _roomSend(room, new ChatMessage('$nickname: $text'));
+        new ChatMessage('$nickname: $text').send(this);
       }
     }
   }

@@ -1,15 +1,25 @@
 import 'dart:convert';
 
-abstract class Message {}
+import 'manager.dart';
 
-class NameResult extends Message {
+abstract class Message {
+  send(User user);
+
+  String build();
+}
+
+class NameMessage implements Message {
   bool success = false;
   String name;
   String message;
 
-  NameResult({this.name, this.success: true, this.message});
+  NameMessage({this.name, this.success: true, this.message});
 
-  String toString() {
+  send(User user) {
+    user.socket.add(build());
+  }
+
+  String build() {
     Map result;
     if (success) {
       result = {
@@ -24,14 +34,18 @@ class NameResult extends Message {
   }
 }
 
-class RoomResult extends Message {
+class RoomMessage implements Message {
   bool success = false;
   String room;
   String message;
 
-  RoomResult({this.room, this.success: true, this.message});
+  RoomMessage({this.room, this.success: true, this.message});
 
-  String toString() {
+  send(User user) {
+    user.socket.add(build());
+  }
+
+  String build() {
     Map result;
     if (success) {
       result = {
@@ -46,12 +60,21 @@ class RoomResult extends Message {
   }
 }
 
-class ChatMessage extends Message {
+class ChatMessage implements Message {
   String text;
 
   ChatMessage(this.text);
 
-  String toString() {
+  send(User user) {
+    Room room = user.room;
+    for (User user in room.users) {
+      if (user.socket != null) {
+        user.socket.add(build());
+      }
+    }
+  }
+
+  String build() {
     Map result = {
       'message': {'text': text}
     };
