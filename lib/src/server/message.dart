@@ -13,7 +13,9 @@ class NameMessage implements Message {
   String name;
   String message;
 
-  NameMessage({this.name, this.success: true, this.message});
+  NameMessage(this.name) : success = true;
+
+  NameMessage.fail(this.message) : success = false;
 
   send(User user) {
     user.socket.add(build());
@@ -23,11 +25,11 @@ class NameMessage implements Message {
     Map result;
     if (success) {
       result = {
-        'nameResult': {'success': true, 'name': name}
+        'nameResult': {'success': success, 'name': name}
       };
     } else {
       result = {
-        'nameResult': {'success': false, 'message': message}
+        'nameResult': {'success': success, 'message': message}
       };
     }
     return JSON.encode(result);
@@ -39,7 +41,9 @@ class RoomMessage implements Message {
   String room;
   String message;
 
-  RoomMessage({this.room, this.success: true, this.message});
+  RoomMessage(this.room) : success = true;
+
+  RoomMessage.fail(this.message) : success = false;
 
   send(User user) {
     user.socket.add(build());
@@ -49,11 +53,11 @@ class RoomMessage implements Message {
     Map result;
     if (success) {
       result = {
-        'roomResult': {'success': true, 'room': room}
+        'roomResult': {'success': success, 'room': room}
       };
     } else {
       result = {
-        'roomResult': {'success': false, 'message': message}
+        'roomResult': {'success': success, 'message': message}
       };
     }
     return JSON.encode(result);

@@ -12,8 +12,8 @@ class ChatManager {
     User user = new User(socket);
     lobby.addUser(user);
 
-    new NameMessage(name: user.nickname).send(user);
-    new RoomMessage(room: lobby.name).send(user);
+    new NameMessage(user.nickname).send(user);
+    new RoomMessage(lobby.name).send(user);
     new ChatMessage('${user.nickname} has joined ${lobby.name}').send(user);
   }
 }
@@ -95,17 +95,13 @@ class User {
       String name = json['nameAttempt']['name'];
       if (name != null) {
         if (name.startsWith('Guest')) {
-          new NameMessage(
-                  success: false, message: 'Names cannot begin with "Guest".')
-              .send(this);
+          new NameMessage.fail('Names cannot begin with "Guest".').send(this);
         } else {
           if (_nicknames.contains(name)) {
-            new NameMessage(
-                    success: false, message: 'That name is already in use.')
-                .send(this);
+            new NameMessage('That name is already in use.').send(this);
           } else {
             _nicknames.remove(nickname);
-            new NameMessage(name: name).send(this);
+            new NameMessage(name).send(this);
             new ChatMessage('$nickname is now known as $name').send(this);
             nickname = name;
             _nicknames.add(nickname);
@@ -123,7 +119,7 @@ class User {
         room = new Room.create(roomName);
         room.addUser(this);
 
-        new RoomMessage(room: roomName).send(this);
+        new RoomMessage(roomName).send(this);
         new ChatMessage('$nickname has joined $roomName').send(this);
       }
     }
