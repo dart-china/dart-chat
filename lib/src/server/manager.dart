@@ -98,7 +98,7 @@ class User {
           new NameMessage.fail('Names cannot begin with "Guest".').send(this);
         } else {
           if (_nicknames.contains(name)) {
-            new NameMessage('That name is already in use.').send(this);
+            new NameMessage.fail('That name is already in use.').send(this);
           } else {
             _nicknames.remove(nickname);
             new NameMessage(name).send(this);
